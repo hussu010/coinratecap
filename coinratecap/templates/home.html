@@ -1,0 +1,90 @@
+{% extends 'base.html'%}
+{% load crispy_forms_tags %}
+{% load humanize %}
+{% block content %}
+<div class = 'mx-auto pt-5 mt-5' style='width:90%'>
+    <table id = "sort" class="table table-bordered table-responsive-md table-hover" >
+        <thead class="thead-light">
+        <tr>
+            <th >Rank</th>
+            <th >Coin</th>
+            <th >Price</th>
+            <th >1h</th>
+            <th >24h</th>
+            <th >7d</th>
+            <th >24h Vol</th>
+            <th >Mkt Cap</th>
+            <th >Last 7 days</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for info in final_list %}
+            <tr>
+                <td>{{ info.market_cap_rank }}</td>
+                <td><img src="{{ info.image }}" style="width: 20px;" </img> <a href="{{ info.id }}">{{ info.name }}</a> <span>({{ info.symbol }}) </span></td>
+                <td>${{ info.current_price|intcomma }}</td>
+                <td {% if info.price_change_percentage_1h_in_currency >= 0 %} class="text-success"> {% else %} class="text-danger"> {% endif %} {{ info.price_change_percentage_1h_in_currency|floatformat:1 }}%</td>
+                <td {% if info.price_change_percentage_24h_in_currency >= 0 %} class="text-success"> {% else %} class="text-danger"> {% endif %}{{ info.price_change_percentage_24h_in_currency|floatformat:1 }}%</td>
+                <td {% if info.price_change_percentage_7d_in_currency >= 0 %} class="text-success"> {% else %} class="text-danger"> {% endif %}{{ info.price_change_percentage_7d_in_currency|floatformat:1 }}%</td>
+                <td>${{ info.market_cap|intcomma }}</td>
+                <td>${{ info.total_volume|intcomma }}</td>
+                <td><canvas id="myChart{{ info.symbol }}" height='40'></canvas></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+{% block javascript %}
+    {{ block.super }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js" integrity="sha512-qzgd5cYSZcosqpzpn7zF2ZId8f/8CHmFKZ8j7mU4OUXTNRd5g+ZHBPsgKEwoqxCtdQvExE5LprwwPAgoicguNg==" crossorigin="anonymous"></script>
+    <script>
+    $(function() {
+        $("#sort").tablesorter();
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script>
+    {% for info in final_list %}
+        var ctx = 'myChart{{ info.symbol }}';
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+            // The data for our dataset
+            data: {
+                labels: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+                datasets: [{
+                    label: '',
+                    backgroundColor: 'rgb(255, 255, 255)',
+                    borderColor: 'rgb{% if info.price_change_percentage_7d_in_currency > 0 %}(0,255,0) {% else %}(255, 99, 132) {% endif %}',
+                    pointRadius: 0,
+                    lineTension: 0,
+                    borderWidth: 1.5,
+                    data: {{ info.sparkline_in_7d }}
+                }]
+            },
+            // Configuration options go here
+            options: {
+                legend : {
+                    display: false,
+
+                },
+                tooltips: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                scales: {
+                xAxes: [{
+                    display: false,
+                }],
+                yAxes: [{
+                    display: false,
+                }]
+                
+                }
+            }
+        });
+    {% endfor %}
+    </script>
+{% endblock %}

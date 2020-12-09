@@ -1,0 +1,226 @@
+{% load static %}
+{% load i18n %}
+<!doctype html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="{% static 'logo3.ico' %}" />
+    <meta content='maximum-scale=1.0, initial-scale=1.0, width=device-width' name='viewport'>
+    <title>{% block title %}{% endblock %}</title>
+    {% block page_meta %}
+    {% endblock %}
+    {#Global styles #}
+    {% block site_css %}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans|Raleway" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet">
+        <style>
+            .navbar-toggler>.close {
+                display:inline;
+        }
+            .navbar-toggler.collapsed>.close, .navbar-toggler:not(.collapsed)>.navbar-toggler-icon {
+                display:none;
+        }
+        .footer-a {
+            color: #818494;
+            font-weight: 500;
+            text-decoration: none;
+            background-color: transparent;
+        }
+        .footer-a:hover {
+            color: #007bff;
+            text-decoration: none;
+        }
+        </style>
+    {% endblock %}
+    {# Page-specific styles #}
+    {% autoescape off %}
+        {% block page_css %}{% endblock %}
+    {% endautoescape %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav" style="background-color: #f4f3f4;">
+    <a class="navbar-brand" href="#">
+        <img src="https://merodera.s3.ap-south-1.amazonaws.com/static/room/images/small_logo.png" alt="mero dera">
+    </a>
+        <button class="navbar-toggler navbar-toggler-right collapsed" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="my-1 mx-2 close">X</span>
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#"> <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="#"> <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ">
+                {% if user.is_authenticated %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#" style="font-size: 1.1em !important;"><i class="fas fa-truck-moving"></i> {% trans 'Transportation' %}</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#" style="font-size: 1.1em !important;"><i class="fa fa-envelope"></i> {% trans 'Messages' %} <span class="badge badge-danger">{{ message_count }}</span></a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#" style="font-size: 1.1em !important;"><i class="fas fa-plus-square"></i> {% trans 'Add Property' %}<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdownMenuLink" style="font-size: 1.1em !important;" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> test
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" href="#">{% trans 'My Properties' %}</a>
+                            <a class="dropdown-item" href="#">{% trans 'Bookmarks' %}</a>
+                            <a class="dropdown-item" href="#">{% trans 'Account' %}</a>
+                            {% if user.is_staff %}
+                                <a class="dropdown-item" href="#">Pending V</a>
+                                <a class="dropdown-item" href="#">Reported R</a>
+                            {% endif %}
+                            <a class="dropdown-item" href="#">{% trans 'Logout' %}</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdownMenuLink" style="font-size: 1.1em !important;" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans 'भाषाहरु' %}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <div id = 'english-language' class="dropdown-item"><i class="flag-icon flag-icon-us"></i> {% trans 'English' %}</div>
+                            <div id='nepali-language' class="dropdown-item"><i class="flag-icon flag-icon-np"></i>{% trans 'Nepali' %}</div>
+                        </div>
+                    </li>
+
+                {% else %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#" style="font-size: 1.1em !important;"><i class="fas fa-truck-moving"></i>{% trans 'Transportation' %}</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#" style="font-size: 1.1em !important;"><i class="fas fa-plus-square"></i> {% trans 'Add Property' %}<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#" style="font-size: 1.1em !important;"><i class="fas fa-question-circle"></i> {% trans 'Help' %}<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#" style="font-size: 1.1em !important;"> {% trans 'Log in' %}<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="btn btn-outline-secondary rounded-pill shadow-sm" href="#"" style="font-size: 1.1em !important;"><i class="fas fa-user-plus"></i> {% trans 'Sign up' %} <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdownMenuLink" style="font-size: 1.1em !important;" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans 'भाषाहरु' %}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <div id = 'english-language' class="dropdown-item"><i class="flag-icon flag-icon-us"></i> {% trans 'English' %}</div>
+                            <div id='nepali-language' class="dropdown-item"><i class="flag-icon flag-icon-np"></i>{% trans 'Nepali' %}</div>
+                        </div>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+</nav>
+{% block content %}
+{% endblock %}
+{% block footer %}
+    <footer class="py-5" style="background: #ebf4fa;">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto">
+                    <a class="navbar-brand" href="#">
+                        <img src="https://merodera.s3.ap-south-1.amazonaws.com/static/room/images/small_logo.png" alt="mero dera">
+                    </a>
+                    <p class="py-3">{% trans "Buy/ Rent/ Sell Rooms, Houses, Flats/ Apartments, Hostels at meroDera, Nepal's No.1 property site." %}</p>
+                </div>
+
+                <hr class="w-100 clearfix d-md-none">
+
+                <!-- Grid column -->
+                <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4 font-weight-bold">{% trans 'Company' %}</h6>
+                    <p>
+                        <a class="footer-a" href="#">{% trans 'About' %}</a>
+                    </p>
+                    <p>
+                        <a class="footer-a" href="#">{% trans 'Careers' %}</a>
+                    </p>
+                    <p>
+                        <a class="footer-a" href="#">{% trans 'Blog' %}</a>
+                    </p>
+                </div>
+                <!-- Grid column -->
+                <hr class="w-100 clearfix d-md-none">
+
+                <!-- Grid column -->
+                <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4 font-weight-bold">{% trans 'Useful links' %}</h6>
+                    <p>
+                        <a class="footer-a" href="#">{% trans 'Contact Us' %}</a>
+                    </p>
+                    <p>
+                        <a class="footer-a" href="#">{% trans 'FAQs' %}</a>
+                    </p>
+                    <p>
+                        <a class="footer-a" href="#">{% trans 'Help' %}</a>
+                    </p>
+                </div>
+                <!-- Grid column -->
+                <hr class="w-100 clearfix d-md-none">
+                <!-- Grid column -->
+                <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4 font-weight-bold">{% trans 'Contact' %}</h6>
+                    <p><i class="fas fa-home mr-3"></i>{% trans 'Balaju, Kathmandu' %}</p>
+                    <p><i class="fas fa-envelope mr-3"></i><a class="footer-a" href="mailto:meroderaofficial@gmail.com">meroderaofficial@gmail.com</a> </p>
+                    <p><i class="fas fa-phone mr-3"></i><a class="footer-a" href="tel:+977-9863299610">+ 977 9863299610</a></p>
+                    <p><i class="fas fa-print mr-3"></i><a class="footer-a" href="tel:+977-9847592078">+ 977 9847592078</a></p>
+                    <!-- Social buttons -->
+                    <ul class="list-unstyled list-inline">
+                        <li class="list-inline-item">
+                            <a class="footer-a" href="https://fb.com/meroderaa"><i class="fab fa-facebook"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a class="footer-a" href="https://twitter.com/meroderaa"><i class="fab fa-twitter"></i></a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a class="footer-a" href="https://www.instagram.com/meroderaa/"><i class="fab fa-instagram"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Grid column -->
+            </div>
+            <!-- Footer links -->
+            <hr class="w-100 clearfix d-md-none">
+            <div class="row text-center">
+                <div class="col-md-6 col-lg-6 col-xl-6 mx-auto">
+                    <a class="footer-a mr-4" href="#">{% trans 'Privacy' %}</a>
+                    <a class="footer-a mr-4" href="#">{% trans 'Terms and Conditions' %}</a>
+                    <a class="footer-a" href="#">{% trans 'Report a Security Issue' %}</a>
+
+                </div>
+                <div class="col-md-6 col-lg-6 col-xl-6 mx-auto">
+                    <p class="text-center text-md-left">© 2020 meroDera. All rights reserved.</p>
+                </div>
+            </div>
+            <!-- Grid row -->
+        </div>
+    </footer>
+{% endblock %}
+
+{% block javascript %}
+<!-- JS, Popper.js, and jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        
+    <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+    <script>
+    function addDarkmodeWidget() {
+        new Darkmode().showWidget();
+    }
+    window.addEventListener('load', addDarkmodeWidget);
+    </script>
+{% endblock %}
+</body>
+</html>
